@@ -15,10 +15,10 @@ export default async function(req:NextApiRequest, res:NextApiResponse){
         }
         try{
             const completion= await openai.createEmbedding({
-                model: "text-embedding-ada-002",  
-                input :req.body
+                "model": "text-embedding-ada-002",  
+                "input" :req.body.prompt
             })
-
+            console.log({completion})
             res.status(200).json({ result: completion.data.data});
 
         }catch(error:any){
