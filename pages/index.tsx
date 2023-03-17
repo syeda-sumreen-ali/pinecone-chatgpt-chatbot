@@ -8,6 +8,8 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const [prompt, setprompt] = useState("")
+  const [title, settitle] = useState("")
+
   const [results, setresults] = useState([])
 
    const onSubmit =async(e:any)=>{
@@ -18,7 +20,7 @@ export default function Home() {
         headers:{
           "Content-Type":"application/json"
         },
-        body:JSON.stringify({prompt})
+        body:JSON.stringify({prompt, title})
       })
       const data =await response.json();
       if(response.status !== 200){
@@ -43,6 +45,13 @@ export default function Home() {
      <main className={styles.main}>
         <h3>TEXT EMBEDDING AND VECTOR SEARCH <br/> THROUGH OPEN AI AND PINECONE</h3>
         <form onSubmit={onSubmit}>
+        <input
+            type="text"
+            name="title"
+            placeholder="Enter title"
+            value={title}
+            onChange={(e) => settitle(e.target.value)}
+          />
           <input
             type="text"
             name="prompt"
