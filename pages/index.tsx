@@ -103,7 +103,7 @@ export default function Home() {
     return(
       <div className='w-[100%] mt-20 md:mt-0 md:w-[40vw] flex flex-col overflow-x-hidden  justify-between'>
           {queries.map((item,index)=>(
-            <div className={`flex items-center space-x-4 ${item.type==="user" && 'ml-auto'}`}>
+            <div key={ulid()} className={`flex items-center space-x-4 ${item.type==="user" && 'ml-auto'}`}>
              {item.type!=="user" &&<div className='bg-blue-50 w-14 h-14 rounded-full flex items-center justify-center'>
                 <p>MG</p>
               </div>}
