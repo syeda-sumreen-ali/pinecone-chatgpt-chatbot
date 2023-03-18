@@ -22,12 +22,12 @@ export default async function (req:NextApiRequest, res:NextApiResponse){
           );
     console.log("pinecode query success...", queryResponse)
     let data=""
-    queryResponse.matches.map((item)=>{
-        const temp =`<p>${item.metadata.text}</p> </br>`
+    // queryResponse.matches.map((item)=>{
+        const temp =`<p>${queryResponse.matches[0].metadata.text}</p> </br>`
         data= data + temp
-    }
+    // }
         
-    )
+    // )
   
     res.status(200).json({data});
 
