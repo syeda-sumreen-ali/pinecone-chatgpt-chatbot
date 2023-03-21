@@ -14,12 +14,14 @@ export default function Home() {
 
   const [title, settitle] = useState("")
   const [activePage, setactivePage] = useState("chat")
-  const [queries, setqueries] = useState([
+  const [messages, setmessages] = useState([
     {id:1, type:"chatbot", message:"how may I help you?"},
 ])
 
   const [results, setresults] = useState("")
 
+
+  // add info in pinecone knowledge base
    const onSubmit =async(e:any)=>{
     e.preventDefault();
     try {
@@ -42,25 +44,46 @@ export default function Home() {
    }
 
    const onSendQuery=async(e:any)=>{
+    
     e.preventDefault();
+
     try {
-      let temp= queries.slice()
+
+      let temp= messages.slice()
       temp.push( {   id:Math.random(), type:"user",message:query})
-      setqueries(temp)
+
+      let apiMessages=[]
+      for (const iterator of temp) {
+        let role=""
+        if (iterator.type === "chatbot") {
+          role = "assistant";
+        } else {
+          role = "user";
+        }
+        apiMessages.push({role, content:iterator.message})
+
+
+      }
+    
+
+      setmessages(temp)
      
       const response= await fetch('/api/queryAPI',{
         method:"POST",
         headers:{
           "Content-Type":"application/json"
         },
-        body:JSON.stringify({prompt:query})
+        body:JSON.stringify({
+          prompt:query,
+          apiMessages
+        })
       })
       const data =await response.json();
       if(response.status !== 200){
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
       temp.push({   id:Math.random(), type:"chatbot",message:data.data})
-      setqueries(temp)
+      setmessages(temp)
       setquery("")
       // setresults(data.result)
     } catch (error:any) {
@@ -102,7 +125,7 @@ export default function Home() {
    const renderChat=()=>{
     return(
       <div className='w-[100%] mt-20 md:mt-0 md:w-[40vw] flex flex-col overflow-x-hidden  justify-between'>
-          {queries.map((item,index)=>(
+          {messages.map((item,index)=>(
             <div key={ulid()} className={`flex items-center space-x-4 ${item.type==="user" && 'ml-auto'}`}>
              {item.type!=="user" &&<div className='bg-blue-50 w-14 h-14 rounded-full flex items-center justify-center'>
                 <p>MG</p>
