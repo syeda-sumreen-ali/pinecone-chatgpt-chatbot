@@ -1,5 +1,3 @@
-
-
 const MODEL = "gpt-3.5-turbo";
 
 export async function chatGPTTurbo(body:any) {
@@ -15,6 +13,8 @@ export async function chatGPTTurbo(body:any) {
           ...body // The messages from our chat with ChatGPT
         ]
       }
+
+      console.log({apiRequestBody})
   let data=  await fetch("https://api.openai.com/v1/chat/completions", 
     {
       method: "POST",
@@ -26,8 +26,9 @@ export async function chatGPTTurbo(body:any) {
     }).then((data) => {
       return data.json();
     }).then((data) => {
-        return data.choices[0].message.content
-    });
+        console.log(data)
+        return data.choices[0]?.message?.content || ""
+    }).catch(err=>console.log(err.message));
     
     return data;
 }

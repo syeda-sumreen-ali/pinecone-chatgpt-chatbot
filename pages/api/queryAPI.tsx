@@ -22,6 +22,9 @@ export default async function (req:NextApiRequest, res:NextApiResponse){
     let chatGPTResponse= await chatGPTTurbo(apiMessages)
 
 
+
+
+
   // convert user input into vector
 
     const promptEmbedding = await createEmbedding(prompt);
@@ -29,7 +32,8 @@ export default async function (req:NextApiRequest, res:NextApiResponse){
     const promptVector = promptEmbedding.data[0]?.embedding ?? [];
   
 
-    // searching query response in pinecone db
+      // searching query response in pinecone db
+
     console.log("pinecode query  start...")
     try {
        
@@ -45,18 +49,18 @@ export default async function (req:NextApiRequest, res:NextApiResponse){
     console.log("pinecode query success...", queryResponse.matches.length)
  
     
-    const pineconeResponse = queryResponse.matches[0].metadata.text;
    
+    const pineconeResponse = queryResponse.matches[0]?.metadata?.text;
+    
     // calculate similarity b.w pinecone and user query
     const pineconeScore = similarity(pineconeResponse, prompt);
-   
-    // calculate similarity b.w chatgpt and user query
 
+    // calculate similarity b.w chatgpt and user query
     const chatGPTScore = similarity(chatGPTResponse, prompt);
 
-        
-    // comparing chatgpt and pinecone similarity score
+    console.log({ pineconeResponse, pineconeScore, chatGPTScore})
 
+    // comparing chatgpt and pinecone similarity score
     if (pineconeScore > chatGPTScore) {
       res.status(200).json({data:pineconeResponse});
       console.log('Pinecone DB response is closer to user query');
